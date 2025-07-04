@@ -27,3 +27,4 @@ C:\coding\dotnet\drinksRequestsProject\obj\Debug\net9.0\drinksRequestsProject.pd
 C:\coding\dotnet\drinksRequestsProject\obj\Debug\net9.0\drinksRequestsProject.genruntimeconfig.cache
 C:\coding\dotnet\drinksRequestsProject\obj\Debug\net9.0\ref\drinksRequestsProject.dll
 C:\coding\dotnet\drinksRequestsProject\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\coding\dotnet\drinksRequestsProject\obj\Debug\net9.0\drinksRequestsProject.sourcelink.json
