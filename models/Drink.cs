@@ -1,23 +1,20 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace drinksRequestsProject;
-
-// Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
 public class Drink
 {
     [JsonPropertyName("strDrink")]
-    public string strDrink { get; set; }
+    public required string StrDrink { get; set; }
 
     [JsonPropertyName("strDrinkThumb")]
-    public string strDrinkThumb { get; set; }
+    public string? StrDrinkThumb { get; set; }
 
     [JsonPropertyName("idDrink")]
-    public string idDrink { get; set; }
+    public string? IdDrink { get; set; }
 }
 
 public class Root
 {
     [JsonPropertyName("drinks")]
-    public List<Drink> drinks { get; set; }
+    public required List<Drink> Drinks { get; set; }
 }
-

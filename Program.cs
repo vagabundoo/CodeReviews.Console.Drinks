@@ -3,15 +3,13 @@ using System.Text.Json.Serialization;
 using drinksRequestsProject;
 using Spectre.Console;
 
-using HttpClient client = new()
-{
-    BaseAddress = new Uri("https://www.thecocktaildb.com")
-};
+using HttpClient client = new();
+client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
 // We make two requests to the api, one for each drink category, and save the results for use in the rest of the program.
 var responseAlcoholic = await client.GetAsync(
-    //"www.thecocktaildb.com/api/json/v1/1/random.php");
-    "api/json/v1/1/filter.php?a=Alcoholic");
+    "api/json/v1/1/filter.php?a=Alcoholic"
+);
 
 string responseContentAlcoholic;
 if (responseAlcoholic.IsSuccessStatusCode)
@@ -20,7 +18,7 @@ else
     responseContentAlcoholic = new DrinkExamples().GetAlcoholicDrinksExamples();
 
 var listOfDrinksAlcoholic = JsonSerializer.Deserialize<Root>(responseContentAlcoholic);
-var alcoholicDrinks = listOfDrinksAlcoholic!.drinks;
+var alcoholicDrinks = listOfDrinksAlcoholic!.Drinks;
 
 string responseContentNonAlcoholic;
 var responseNonAlcoholic = await client.GetAsync(
@@ -33,12 +31,13 @@ else
     responseContentNonAlcoholic = new DrinkExamples().GetNonAlcoholicDrinksExamples();
 
 var listOfDrinksNonAlcoholic = JsonSerializer.Deserialize<Root>(responseContentNonAlcoholic);
-var nonAlcoholicDrinks = listOfDrinksNonAlcoholic!.drinks;
+var nonAlcoholicDrinks = listOfDrinksNonAlcoholic!.Drinks;
 
 // Logic for menu
-string[] drinkCategories = ["Alcoholic", "Non-Alcoholic", "Exit application"];
 Console.Clear();
 Console.WriteLine("Welcome to The Beech Bar");
+
+string[] drinkCategories = ["Alcoholic", "Non-Alcoholic", "Exit application"];
 
 while (true)
 {
@@ -54,23 +53,23 @@ while (true)
             var chosenDrink1 = AnsiConsole.Prompt(
                 new SelectionPrompt<Drink>()
                     .Title("Choose a drink")
-                    .UseConverter(d => $"{d.strDrink}")
+                    .UseConverter(d => $"{d.StrDrink}")
                     .AddChoices(
                         alcoholicDrinks)
             );
-            AnsiConsole.MarkupLine($"You have chosen: [purple]{chosenDrink1.strDrink}[/]");
-            AnsiConsole.MarkupLine($"Click here for a picture of the drink: {chosenDrink1.strDrinkThumb}");
+            AnsiConsole.MarkupLine($"You have chosen: [purple]{chosenDrink1.StrDrink}[/]");
+            AnsiConsole.MarkupLine($"Click here for a picture of the drink: {chosenDrink1.StrDrinkThumb}");
             break;
         case "Non-Alcoholic":
             var chosenDrink2 = AnsiConsole.Prompt(
                 new SelectionPrompt<Drink>()
                     .Title("Choose a drink")
-                    .UseConverter(d => $"{d.strDrink}")
+                    .UseConverter(d => $"{d.StrDrink}")
                     .AddChoices(
                         nonAlcoholicDrinks)
             );
-            AnsiConsole.MarkupLine($"You have chosen: [blue]{chosenDrink2.strDrink}[/]");
-            AnsiConsole.MarkupLine($"Click here for a picture of the drink: {chosenDrink2.strDrinkThumb}");
+            AnsiConsole.MarkupLine($"You have chosen: [blue]{chosenDrink2.StrDrink}[/]");
+            AnsiConsole.MarkupLine($"Click here for a picture of the drink: {chosenDrink2.StrDrinkThumb}");
             break;
         case "Exit application":
             AnsiConsole.MarkupLine($"[green]Goodbye![/]");
@@ -79,21 +78,3 @@ while (true)
 }
 
 
-
-public class Drink
-{
-    [JsonPropertyName("strDrink")]
-    public string strDrink { get; set; }
-
-    [JsonPropertyName("strDrinkThumb")]
-    public string strDrinkThumb { get; set; }
-
-    [JsonPropertyName("idDrink")]
-    public string idDrink { get; set; }
-}
-
-public class Root
-{
-    [JsonPropertyName("drinks")]
-    public List<Drink> drinks { get; set; }
-}
