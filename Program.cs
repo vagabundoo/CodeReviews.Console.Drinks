@@ -1,81 +1,67 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Spectre.Console;
-using System.Net.Http.Headers;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using drinksRequestsProject;
-using Newtonsoft.Json;
 
+string jsonExample = """
+                     {
+                         "drinks": [
+                         {
+                             "strDrink": "Afterglow",
+                             "strDrinkThumb": "https://www.thecocktaildb.com/images/media/drink/vuquyv1468876052.jpg",
+                             "idDrink": "12560"
+                         },
+                         {
+                             "strDrink": "Alice Cocktail",
+                             "strDrinkThumb": "https://www.thecocktaildb.com/images/media/drink/qyqtpv1468876144.jpg",
+                             "idDrink": "12562"
+                         }]
+                     }
+                     """;
 
 using HttpClient client = new()
 {
     BaseAddress = new Uri("https://www.thecocktaildb.com")
 };
+var response = await client.GetAsync(
+    //"www.thecocktaildb.com/api/json/v1/1/random.php");
+    "https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic");
 
-var response = await client.GetAsync("api/json/v1/1/random.php");
-
-Console.WriteLine(response);
-
-
-
-client.DefaultRequestHeaders.Accept.Clear();
-//client.DefaultRequestHeaders.Accept.Add(
-//    new MediaTypeWithQualityHeaderValue("www.thecocktaildb.com/api/json/v1/1/random.php"));
-//client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
-
-await ProccessListDrinks(client);
-
-static async Task ProccessListDrinks(HttpClient client)
+if (response.IsSuccessStatusCode)
 {
-    var response = await client.GetAsync(
-        //"www.thecocktaildb.com/api/json/v1/1/random.php");
-        "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Ordinary_Drink");
+    var responseContent = response.Content.ReadAsStringAsync().Result;
 
-    if (response.IsSuccessStatusCode)
+    if (responseContent != null)
     {
-        var drinks = response.Content.ToString();
+        Root listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
 
-        var serialize = JsonConvert.DeserializeObject<Root>(drinks);
-        Console.WriteLine(serialize);
+        var drink1 = listOfDrinks.drinks[0];
+        var drink2 = listOfDrinks.drinks[1];
+
+        Console.WriteLine(drink1.idDrink);
+        Console.WriteLine(drink1.strDrink);
+        Console.WriteLine(drink1.strDrinkThumb);
+        Console.WriteLine(drink2); 
+        
     }
-
     
-   
+    
 }
 
 
 
-Console.WriteLine("Welcome to Beach Bar");
-
-// mock data
-string[] drinkCategories = ["Alcoholic", "Non-aloholic"];
-
-string[] alcoholicDrinks = ["dark beer", "white beer"];
-string[] nonalcoholicDrinks = ["coffee", "tea"];
-
-var categoryChoice = AnsiConsole.Prompt(
-    new SelectionPrompt<string>()
-        .Title("Choose an category:")
-        .AddChoices(drinkCategories)
-);
-
-switch (categoryChoice)
+public class Drink
 {
-    case "Alcoholic":
-        var detailChoice1 = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("Choose a drink")
-                .AddChoices(alcoholicDrinks)
-        );
-        AnsiConsole.MarkupLine($"You have chosen: [purple]{detailChoice1}[/]!");
-        break;
-    case "Non-aloholic":
-        var detailChoice2 = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("Choose a drink")
-                .AddChoices(nonalcoholicDrinks)
-        );
-        AnsiConsole.WriteLine($"You have chosen: {detailChoice2}!");
-        break;
-    default:
-        break;
+    [JsonPropertyName("strDrink")]
+    public string strDrink { get; set; }
+
+    [JsonPropertyName("strDrinkThumb")]
+    public string strDrinkThumb { get; set; }
+
+    [JsonPropertyName("idDrink")]
+    public string idDrink { get; set; }
+}
+
+public class Root
+{
+    [JsonPropertyName("drinks")]
+    public List<Drink> drinks { get; set; }
 }
