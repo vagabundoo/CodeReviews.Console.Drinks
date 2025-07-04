@@ -6,6 +6,39 @@ using Spectre.Console;
 using HttpClient client = new();
 client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
+var requestedDrinkCategories = new List<string> { "Alcoholic", "Non_Alcoholic"};
+
+Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<Drink>>();
+
+foreach (var category in requestedDrinkCategories)
+{
+    string responseContent;
+    string endpoint = $"api/json/v1/1/filter.php?a={category}";
+    try
+    {
+        var response = await client.GetAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+            responseContent = response.Content.ReadAsStringAsync().Result;
+        else
+            responseContent = new DrinkExamples().GetDefaultExample(category);
+    }
+    catch (Exception e)
+    {
+        responseContent = new DrinkExamples().GetDefaultExample(category);
+    }
+    
+
+    //Console.WriteLine(responseContent);
+    var listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
+    drinksByCategory[category] = listOfDrinks!.Drinks ;
+}
+
+Console.WriteLine($"Valid categories: {drinksByCategory.Count}");
+
+
+
+/*
 // We make two requests to the api, one for each drink category, and save the results for use in the rest of the program.
 var responseAlcoholic = await client.GetAsync(
     "api/json/v1/1/filter.php?a=Alcoholic"
@@ -33,6 +66,7 @@ else
 var listOfDrinksNonAlcoholic = JsonSerializer.Deserialize<Root>(responseContentNonAlcoholic);
 var nonAlcoholicDrinks = listOfDrinksNonAlcoholic!.Drinks;
 
+/*
 // Logic for menu
 Console.Clear();
 Console.WriteLine("Welcome to The Beech Bar");
@@ -44,7 +78,7 @@ while (true)
     var categoryChoice = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
             .Title("Choose a drink category.")
-            .AddChoices(drinkCategories)
+            .AddChoices(requestedDrinkCategories)
     );
 
     switch (categoryChoice)
@@ -78,3 +112,4 @@ while (true)
 }
 
 
+*/

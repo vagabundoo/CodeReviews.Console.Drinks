@@ -33,6 +33,17 @@ public class DrinkExamples
                                            }]
                                          }
                                          """;
+        
+        private readonly string _jsonExampleMissing = """
+                                                           {
+                                                           "drinks": [
+                                                             {
+                                                               "strDrink": "MissingDrink",
+                                                               "strDrinkThumb": "",
+                                                               "idDrink": "000"
+                                                             }]
+                                                           }
+                                                           """;
 
         public string GetAlcoholicDrinksExamples()
         {
@@ -43,6 +54,19 @@ public class DrinkExamples
         {
             return _jsonExampleNonAlcoholic;
         }
+
+        public string GetDefaultDrinksExamples()
+        {
+            return _jsonExampleMissing;
+        }
+        
+        public string GetDefaultExample(string category) =>
+            category switch
+            {
+                "Alcoholic" => new DrinkExamples().GetAlcoholicDrinksExamples(),
+                "Non_Alcoholic" => new DrinkExamples().GetNonAlcoholicDrinksExamples(),
+                _ => "{" + "\"drinks\": []" + "}" // fallback to empty list for unknown categories
+            };
     
 }
 
