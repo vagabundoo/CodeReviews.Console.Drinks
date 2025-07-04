@@ -1,6 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Spectre.Console;
 using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
+using drinksRequestsProject;
+using Newtonsoft.Json;
+
 
 using HttpClient client = new()
 {
@@ -11,7 +15,9 @@ var response = await client.GetAsync("api/json/v1/1/random.php");
 
 Console.WriteLine(response);
 
-/*client.DefaultRequestHeaders.Accept.Clear();
+
+
+client.DefaultRequestHeaders.Accept.Clear();
 //client.DefaultRequestHeaders.Accept.Add(
 //    new MediaTypeWithQualityHeaderValue("www.thecocktaildb.com/api/json/v1/1/random.php"));
 //client.DefaultRequestHeaders.Add("User-Agent", ".NET Foundation Repository Reporter");
@@ -20,11 +26,24 @@ await ProccessListDrinks(client);
 
 static async Task ProccessListDrinks(HttpClient client)
 {
-    var json = await client.GetStringAsync(
-        "www.thecocktaildb.com/api/json/v1/1/random.php");
-    System.Console.WriteLine(json);
+    var response = await client.GetAsync(
+        //"www.thecocktaildb.com/api/json/v1/1/random.php");
+        "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Ordinary_Drink");
+
+    if (response.IsSuccessStatusCode)
+    {
+        var drinks = response.Content.ToString();
+
+        var serialize = JsonConvert.DeserializeObject<Root>(drinks);
+        Console.WriteLine(serialize);
+    }
+
+    
+   
 }
-*/
+
+
+
 Console.WriteLine("Welcome to Beach Bar");
 
 // mock data
