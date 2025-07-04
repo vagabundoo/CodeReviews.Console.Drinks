@@ -6,7 +6,7 @@ using Spectre.Console;
 using HttpClient client = new();
 client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
-var requestedDrinkCategories = new List<string> { "Alcoholic", "Non_Alcoholic"};
+var requestedDrinkCategories = new List<string> { "Alcoholic", "Non_Alcoholic" , "Other"};
 
 Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<Drink>>();
 
@@ -27,11 +27,23 @@ foreach (var category in requestedDrinkCategories)
     {
         responseContent = new DrinkExamples().GetDefaultExample(category);
     }
-    
 
-    //Console.WriteLine(responseContent);
-    var listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
-    drinksByCategory[category] = listOfDrinks!.Drinks ;
+    Console.WriteLine(responseContent.ToString());
+    try
+    {
+        Root? listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
+        if (listOfDrinks != null)
+        {
+            drinksByCategory[category] = listOfDrinks.Drinks;
+        }
+
+    }
+    catch (JsonException e)
+    {
+        Console.WriteLine(e.Message);
+    }
+
+   
 }
 
 Console.WriteLine($"Valid categories: {drinksByCategory.Count}");
