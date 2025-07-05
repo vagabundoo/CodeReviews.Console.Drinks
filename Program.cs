@@ -11,7 +11,7 @@ var requestedDrinkCategories = new List<string> {};
 
 // Get categories
 {
-    string endpoint = $"api/json/v1/1/list.php?c=list_";
+    string endpoint = $"api/json/v1/1/list.php?c=list";
     try
     {
         var response = await client.GetAsync(endpoint);
@@ -41,7 +41,7 @@ Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<D
 
 foreach (var category in requestedDrinkCategories)
 {
-    string endpoint = $"api/json/v1/1/filter.php_?c={category}";
+    string endpoint = $"api/json/v1/1/filter.php?c={category}";
     try
     
     {
@@ -84,7 +84,8 @@ if (drinksByCategory.Count == 0)
 Console.WriteLine("Welcome to The Beech Bar");
 
 var menuOptions = requestedDrinkCategories.Select(c => c).ToList();
-menuOptions.Add($"[red]Exit application[/]");
+string exitOption = $"[red]Exit application[/]";
+menuOptions.Add(exitOption);
 
 while (true)
 {
@@ -94,7 +95,7 @@ while (true)
             .AddChoices(menuOptions)
     );
 
-    if (categoryChoice == "Exit application")
+    if (categoryChoice == exitOption)
     {
         AnsiConsole.MarkupLine($"[green]Goodbye![/]");
         return;
