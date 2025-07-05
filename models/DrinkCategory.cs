@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace drinksRequestsProject;
+namespace drinksRequestsProject.models;
 
 public class DrinkCategory
 {
