@@ -34,12 +34,8 @@ var requestedDrinkCategories = new List<string> {};
         Console.WriteLine($"Json Error: {e.Message}");
     }
 }
-foreach (var category in requestedDrinkCategories)
-    Console.WriteLine(category);
-Console.WriteLine(requestedDrinkCategories.Count);
 
-var testCategory = new DrinkExamples().GetDefaultExample("Invalid");
-
+// Get drinks for each category
 Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<Drink>>();
 
 foreach (var category in requestedDrinkCategories)
@@ -70,53 +66,40 @@ foreach (var category in requestedDrinkCategories)
   
 }
 
-Console.WriteLine($"Valid categories: {drinksByCategory.Count}");
-
-
-
-/*
-// We make two requests to the api, one for each drink category, and save the results for use in the rest of the program.
-var responseAlcoholic = await client.GetAsync(
-    "api/json/v1/1/filter.php?a=Alcoholic"
-);
-
-string responseContentAlcoholic;
-if (responseAlcoholic.IsSuccessStatusCode)
-    responseContentAlcoholic = responseAlcoholic.Content.ReadAsStringAsync().Result;
-else
-    responseContentAlcoholic = new DrinkExamples().GetAlcoholicDrinksExamples();
-
-var listOfDrinksAlcoholic = JsonSerializer.Deserialize<Root>(responseContentAlcoholic);
-var alcoholicDrinks = listOfDrinksAlcoholic!.Drinks;
-
-string responseContentNonAlcoholic;
-var responseNonAlcoholic = await client.GetAsync(
-    //"www.thecocktaildb.com/api/json/v1/1/random.php");
-    "api/json/v1/1/filter.php?a=Non_Alcoholic");
-
-if (responseNonAlcoholic.IsSuccessStatusCode)
-    responseContentNonAlcoholic = responseNonAlcoholic.Content.ReadAsStringAsync().Result;
-else
-    responseContentNonAlcoholic = new DrinkExamples().GetNonAlcoholicDrinksExamples();
-
-var listOfDrinksNonAlcoholic = JsonSerializer.Deserialize<Root>(responseContentNonAlcoholic);
-var nonAlcoholicDrinks = listOfDrinksNonAlcoholic!.Drinks;
-
-/*
 // Logic for menu
 Console.Clear();
 Console.WriteLine("Welcome to The Beech Bar");
 
-string[] drinkCategories = ["Alcoholic", "Non-Alcoholic", "Exit application"];
+//requestedDrinkCategories.AddRange("Exit application");
+var menuOptions = requestedDrinkCategories.Select(c => c).ToList();
+menuOptions.Add("Exit application");
 
 while (true)
 {
     var categoryChoice = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
-            .Title("Choose a drink category.")
-            .AddChoices(requestedDrinkCategories)
+            .Title("Choose a drink category, or choose 'Exit the application'")
+            .AddChoices(menuOptions)
     );
 
+    if (categoryChoice == "Exit application")
+    {
+        AnsiConsole.MarkupLine($"[green]Goodbye![/]");
+        return;
+    }
+
+    var chosenDrink = AnsiConsole.Prompt(
+        new SelectionPrompt<Drink>()
+            .Title("Choose a drink for details on the drink")
+            .UseConverter(d => $"{d.StrDrink}")
+            .AddChoices(
+                drinksByCategory[categoryChoice])
+    );
+    AnsiConsole.MarkupLine($"You have chosen: [purple]{chosenDrink.StrDrink}[/]");
+    AnsiConsole.MarkupLine($"Click here for a picture of the drink: {chosenDrink.StrDrinkThumb}");
+}
+
+/*
     switch (categoryChoice)
     {
         case "Alcoholic":
@@ -145,7 +128,6 @@ while (true)
             AnsiConsole.MarkupLine($"[green]Goodbye![/]");
             return;
     }
-}
+}*/
 
 
-*/
