@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using drinksRequestsProject;
-using drinksRequestsProject.models;
+﻿using drinksRequestsProject.models;
 using Spectre.Console;
 using DrinkApiService = drinksRequestsProject.DrinkApiService;
 
