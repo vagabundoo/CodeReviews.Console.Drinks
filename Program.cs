@@ -1,71 +1,19 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using drinksRequestsProject;
 using drinksRequestsProject.models;
 using Spectre.Console;
+using DrinkApiService = drinksRequestsProject.DrinkApiService;
 
 using HttpClient client = new();
 client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
-var requestedDrinkCategories = new List<string> {};
+
 
 // Get categories
-{
-    string endpoint = $"api/json/v1/1/list.php?c=list";
-    try
-    {
-        var response = await client.GetAsync(endpoint);
+var requestedDrinkCategories = await DrinkApiService.FetchDrinkCategories(client);
 
-        if (response.IsSuccessStatusCode)
-        {
-            string responseContent = response.Content.ReadAsStringAsync().Result;
-            
-            DrinkCategoryRoot? listOfCategories = JsonSerializer.Deserialize<DrinkCategoryRoot>(responseContent);
-            if (listOfCategories != null)
-            {
-                Console.WriteLine(listOfCategories.DrinkCategories[0].StrCategory);
-                requestedDrinkCategories.AddRange(listOfCategories.DrinkCategories.Select(c => c.StrCategory));
-            }
-        }
-        else
-            Console.WriteLine($"One API call failed, with status code {response.StatusCode}.");
-    }
-    catch (JsonException e)
-    {
-        Console.WriteLine($"Json Error: {e.Message}");
-    }
-}
-
-// Get drinks for each category
-Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<Drink>>();
-
-foreach (var category in requestedDrinkCategories)
-{
-    string endpoint = $"api/json/v1/1/filter.php?c={category}";
-    try
-    
-    {
-        var response = await client.GetAsync(endpoint);
-
-        if (response.IsSuccessStatusCode)
-        {
-            string responseContent = response.Content.ReadAsStringAsync().Result;
-            
-            Root? listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
-            if (listOfDrinks != null)
-            {
-                drinksByCategory[category] = listOfDrinks.Drinks;
-            }
-        }
-        else
-            Console.WriteLine($"One API call failed, with status code {response.StatusCode}.");
-        
-    }
-    catch (JsonException e)
-    {
-        Console.WriteLine($"One category failed to load: {category}. Error: {e.Message}");
-    }
-}
+// Get drinks by category
+var drinksByCategory = await DrinkApiService.FetchDrinksByCategory(requestedDrinkCategories, client);
 
 // Placeholder data to be used in case of no categories / drinks found
 if (drinksByCategory.Count == 0)
@@ -111,5 +59,8 @@ while (true)
     AnsiConsole.MarkupLine($"You have chosen: [purple]{chosenDrink.StrDrink}[/]");
     AnsiConsole.MarkupLine($"Click here for a picture of the drink: {chosenDrink.StrDrinkThumb}");
 }
+
+
+
 
 
