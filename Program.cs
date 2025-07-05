@@ -6,9 +6,37 @@ using Spectre.Console;
 using HttpClient client = new();
 client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
-var requestedDrinkCategories = new List<string> { "Alcoholic", "Non_Alcoholic" , "Other"};
+var requestedDrinkCategories = new List<string> {};
 
+// Get categories
+{
+    string endpoint = $"api/json/v1/1/list.php?c=list";
+    try
+    {
+        var response = await client.GetAsync(endpoint);
 
+        if (response.IsSuccessStatusCode)
+        {
+            string responseContent = response.Content.ReadAsStringAsync().Result;
+            
+            DrinkCategoryRoot? listOfCategories = JsonSerializer.Deserialize<DrinkCategoryRoot>(responseContent);
+            if (listOfCategories != null)
+            {
+                Console.WriteLine(listOfCategories.DrinkCategories[0].StrCategory);
+                requestedDrinkCategories.AddRange(listOfCategories.DrinkCategories.Select(c => c.StrCategory));
+            }
+        }
+        else
+            Console.WriteLine($"One API call failed, with status code {response.StatusCode}.");
+    }
+    catch (JsonException e)
+    {
+        Console.WriteLine($"Json Error: {e.Message}");
+    }
+}
+foreach (var category in requestedDrinkCategories)
+    Console.WriteLine(category);
+Console.WriteLine(requestedDrinkCategories.Count);
 
 var testCategory = new DrinkExamples().GetDefaultExample("Invalid");
 
@@ -16,7 +44,7 @@ Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<D
 
 foreach (var category in requestedDrinkCategories)
 {
-    string endpoint = $"api/json/v1/1/filter.php?a={category}";
+    string endpoint = $"api/json/v1/1/filter.php?c={category}";
     try
     {
         var response = await client.GetAsync(endpoint);
