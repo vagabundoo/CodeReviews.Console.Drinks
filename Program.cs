@@ -8,42 +8,38 @@ client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
 var requestedDrinkCategories = new List<string> { "Alcoholic", "Non_Alcoholic" , "Other"};
 
+
+
+var testCategory = new DrinkExamples().GetDefaultExample("Invalid");
+
 Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<Drink>>();
 
 foreach (var category in requestedDrinkCategories)
 {
-    string responseContent;
     string endpoint = $"api/json/v1/1/filter.php?a={category}";
     try
     {
         var response = await client.GetAsync(endpoint);
 
         if (response.IsSuccessStatusCode)
-            responseContent = response.Content.ReadAsStringAsync().Result;
-        else
-            responseContent = new DrinkExamples().GetDefaultExample(category);
-    }
-    catch (Exception e)
-    {
-        responseContent = new DrinkExamples().GetDefaultExample(category);
-    }
-
-    Console.WriteLine(responseContent.ToString());
-    try
-    {
-        Root? listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
-        if (listOfDrinks != null)
         {
-            drinksByCategory[category] = listOfDrinks.Drinks;
+            string responseContent = response.Content.ReadAsStringAsync().Result;
+            
+            Root? listOfDrinks = JsonSerializer.Deserialize<Root>(responseContent);
+            if (listOfDrinks != null)
+            {
+                drinksByCategory[category] = listOfDrinks.Drinks;
+            }
         }
-
+        else
+            Console.WriteLine($"One API call failed, with status code {response.StatusCode}.");
+        
     }
     catch (JsonException e)
     {
-        Console.WriteLine(e.Message);
+        Console.WriteLine($"One category failed to load: {category}. Error: {e.Message}");
     }
-
-   
+  
 }
 
 Console.WriteLine($"Valid categories: {drinksByCategory.Count}");

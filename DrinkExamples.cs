@@ -65,7 +65,7 @@ public class DrinkExamples
             {
                 "Alcoholic" => new DrinkExamples().GetAlcoholicDrinksExamples(),
                 "Non_Alcoholic" => new DrinkExamples().GetNonAlcoholicDrinksExamples(),
-                _ => "{" + "\"drinks\": []" + "}" // fallback to empty list for unknown categories
+                _ => new DrinkExamples().GetDefaultDrinksExamples() // fallback to valid non-empty for unknown categories
             };
     
 }
