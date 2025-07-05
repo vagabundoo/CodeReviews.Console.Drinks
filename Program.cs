@@ -5,8 +5,6 @@ using DrinkApiService = drinksRequestsProject.DrinkApiService;
 using HttpClient client = new();
 client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
-
-
 // Get categories
 var requestedDrinkCategories = await DrinkApiService.FetchDrinkCategories(client);
 
