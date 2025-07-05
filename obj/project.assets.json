@@ -219,24 +219,31 @@
     ]
   },
   "packageFolders": {
-    "/Users/edu/.nuget/packages/": {}
+    "C:\\Users\\edu\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/edu/RiderProjects/academy-drinksRequestsProject/drinksRequestsProject.csproj",
+      "projectUniqueName": "C:\\Users\\edu\\RiderProjects\\academy-drinksRequestsProject\\drinksRequestsProject.csproj",
       "projectName": "drinksRequestsProject",
-      "projectPath": "/Users/edu/RiderProjects/academy-drinksRequestsProject/drinksRequestsProject.csproj",
-      "packagesPath": "/Users/edu/.nuget/packages/",
-      "outputPath": "/Users/edu/RiderProjects/academy-drinksRequestsProject/obj/",
+      "projectPath": "C:\\Users\\edu\\RiderProjects\\academy-drinksRequestsProject\\drinksRequestsProject.csproj",
+      "packagesPath": "C:\\Users\\edu\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\edu\\RiderProjects\\academy-drinksRequestsProject\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/Users/edu/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\edu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -290,7 +297,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
