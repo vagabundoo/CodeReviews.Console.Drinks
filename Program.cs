@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using drinksRequestsProject;
+using drinksRequestsProject.models;
 using Spectre.Console;
 
 using HttpClient client = new();
@@ -10,7 +11,7 @@ var requestedDrinkCategories = new List<string> {};
 
 // Get categories
 {
-    string endpoint = $"api/json/v1/1/list.php?c=list";
+    string endpoint = $"api/json/v1/1/list.php?c=list_";
     try
     {
         var response = await client.GetAsync(endpoint);
@@ -40,8 +41,9 @@ Dictionary<string, List<Drink>> drinksByCategory = new Dictionary<string, List<D
 
 foreach (var category in requestedDrinkCategories)
 {
-    string endpoint = $"api/json/v1/1/filter.php?c={category}";
+    string endpoint = $"api/json/v1/1/filter.php_?c={category}";
     try
+    
     {
         var response = await client.GetAsync(endpoint);
 
@@ -63,21 +65,32 @@ foreach (var category in requestedDrinkCategories)
     {
         Console.WriteLine($"One category failed to load: {category}. Error: {e.Message}");
     }
-  
+}
+
+// Placeholder data to be used in case of no categories / drinks found
+if (drinksByCategory.Count == 0)
+{
+    AnsiConsole.MarkupLine("[red]No drinks found.[/]");
+    AnsiConsole.MarkupLine("[red]Providing placeholder data for testing purposes.[/]");
+    requestedDrinkCategories = new List<string> {"Alcoholic", "Non_Alcoholic"};
+    drinksByCategory = new Dictionary<string, List<Drink>>
+    {
+        {"Alcoholic", new List<Drink> {new Drink {StrDrink = "MissingDrink", StrDrinkThumb = "", IdDrink = "000"}}},
+        {"Non_Alcoholic", new List<Drink> {new Drink {StrDrink = "MissingDrink", StrDrinkThumb = "", IdDrink = "000"}}}
+    };
 }
 
 // Logic for menu
-Console.Clear();
 Console.WriteLine("Welcome to The Beech Bar");
 
 var menuOptions = requestedDrinkCategories.Select(c => c).ToList();
-menuOptions.Add("Exit application");
+menuOptions.Add($"[red]Exit application[/]");
 
 while (true)
 {
     var categoryChoice = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
-            .Title("Choose a drink category, or choose 'Exit the application'")
+            .Title("Choose a drink category, or exit application.")
             .AddChoices(menuOptions)
     );
 

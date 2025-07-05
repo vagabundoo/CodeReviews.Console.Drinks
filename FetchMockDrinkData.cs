@@ -1,6 +1,6 @@
 ﻿namespace drinksRequestsProject;
 // In case request to the public api don't work, this class provides placeholder data so app still works.
-public class DrinkExamples
+public class FetchMockDrinkData
 {
     private readonly string _jsonExampleAlcoholic = """
                                           {
@@ -63,9 +63,9 @@ public class DrinkExamples
         public string GetDefaultExample(string category) =>
             category switch
             {
-                "Alcoholic" => new DrinkExamples().GetAlcoholicDrinksExamples(),
-                "Non_Alcoholic" => new DrinkExamples().GetNonAlcoholicDrinksExamples(),
-                _ => new DrinkExamples().GetDefaultDrinksExamples() // fallback to valid non-empty for unknown categories
+                "Alcoholic" => new FetchMockDrinkData().GetAlcoholicDrinksExamples(),
+                "Non_Alcoholic" => new FetchMockDrinkData().GetNonAlcoholicDrinksExamples(),
+                _ => new FetchMockDrinkData().GetDefaultDrinksExamples() // fallback for unknown categories
             };
     
 }

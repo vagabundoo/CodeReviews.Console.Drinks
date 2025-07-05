@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace drinksRequestsProject;
+namespace drinksRequestsProject.models;
 public class Drink
 {
     [JsonPropertyName("strDrink")]
