@@ -5,13 +5,10 @@ using DrinkApiService = drinksRequestsProject.DrinkApiService;
 using HttpClient client = new();
 client.BaseAddress = new Uri("https://www.thecocktaildb.com");
 
-// Get categories
 var requestedDrinkCategories = await DrinkApiService.FetchDrinkCategories(client);
 
-// Get drinks by category
 var drinksByCategory = await DrinkApiService.FetchDrinksByCategory(requestedDrinkCategories, client);
 
-// Placeholder data to be used in case of no categories / drinks found
 if (drinksByCategory.Count == 0)
 {
     AnsiConsole.MarkupLine("[red]No drinks found.[/]");
@@ -24,7 +21,6 @@ if (drinksByCategory.Count == 0)
     };
 }
 
-// Logic for menu
 Console.WriteLine("Welcome to The Beech Bar");
 
 var menuOptions = requestedDrinkCategories.Select(c => c).ToList();
